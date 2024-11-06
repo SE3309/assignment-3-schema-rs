@@ -1,6 +1,6 @@
 CREATE TABLE Customer ( 
     UserID INT NOT NULL PRIMARY KEY, 
-    FName VARCHAR(30), 
-    LName VARCHAR(30), 
-    Email  VARCHAR(15), 
-    UserPassword VARCHAR(30) );
+    FName VARCHAR(30) NOT NULL, 
+    LName VARCHAR(30) NOT NULL, 
+    Email  VARCHAR(15) NOT NULL, 
+    UserPassword VARCHAR(30) NOT NULL );
