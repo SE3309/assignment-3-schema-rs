@@ -1,6 +1,6 @@
 CREATE TABLE Restaurant ( 
-    RestaurantId INT NOT NULL PRIMARY KEY, 
-    RestaurantName VARCHAR(30) NOT NULL, 
+    RestaurantId INT AUTO_INCREMENT PRIMARY KEY , 
+    RestaurantName VARCHAR(300) NOT NULL, 
     Street VARCHAR(300) NOT NULL, 
     StreetNumber  INT NOT NULL, 
-    City VARCHAR(30) NOT NULL );
+    City VARCHAR(300) NOT NULL );
