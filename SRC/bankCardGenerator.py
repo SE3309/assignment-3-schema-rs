@@ -1,36 +1,52 @@
 import csv
+import random
 from faker import Faker
+from utils.generateAddresses import generate_addresses
 
 # Initialize Faker
 fake = Faker()
 
 # Define the number of records to generate
 num_records = 4000
+num_cities = 40
 
 # Define the CSV file name
-output_file = "customers.csv"
+output_file = "bankCard.csv"
 
 # Column headers
-fieldnames = ["CardNum", "LName", "Email", "UserPassword"]
+fieldnames = [
+    "CardNumber",
+    "CardType", 
+    "Street", 
+    "StreetNumber",
+    "City",
+    "CardProvider",
+    "ExpiryDate",
+    "BankCVC",
+    "CardHolderName",
+]
+
+card_types = ["Debit", "Credit", "Prepaid"]
+card_providers = ["Visa", "MasterCard"]
+addesses = generate_addresses(num_records,num_cities)
 
 # Write data to the CSV file
 with open(output_file, mode="w", newline="") as file:
     writer = csv.DictWriter(file, fieldnames=fieldnames)
     writer.writeheader()
 
-    for _ in range(num_records):
-        # Generate random data for each field
-        # first_name = fake.first_name()
-        # last_name = fake.last_name()
-        # email = fake.unique.email()
-        # password = fake.password(length=12)  # Generating a random 12-character password
-        card_num=fake.credit_card_number
-        # Write the row to the CSV file
+    for i in range(num_records):
+        # Generate random data for each field        
         writer.writerow({
-            "FName": first_name,
-            "LName": last_name,
-            "Email": email,
-            "UserPassword": password
+            "CardNumber": fake.credit_card_number(),
+            "CardType": random.choice(card_types),
+            "Street": addesses[i]["Street"],
+            "StreetNumber": addesses[i]["StreetNumber"],
+            "City": addesses[i]["City"],
+            "CardProvider": random.choice(card_providers),
+            "ExpiryDate": fake.credit_card_expire(),
+            "BankCVC": fake.credit_card_security_code(),
+            "CardHolderName": fake.name(),
         })
 
 print(f"{num_records} random customer records have been written to {output_file}.")
