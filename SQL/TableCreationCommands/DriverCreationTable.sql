@@ -1,0 +1,7 @@
+CREATE TABLE Driver ( 
+    userId INT PRIMARY KEY AUTO_INCREMENT, 
+    fName VARCHAR(300) NOT NULL, 
+    lName VARCHAR(300) NOT NULL, 
+    email  VARCHAR(300) NOT NULL UNIQUE, 
+    userPassword VARCHAR(300) NOT NULL,
+    licensePlate VARCHAR(20) NOT NULL);
