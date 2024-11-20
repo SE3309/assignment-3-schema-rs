@@ -1,7 +1,7 @@
 CREATE TABLE CustomerBankCard ( 
-    CustomerId INT, 
-    CardNumber VARCHAR(19) NOT NULL, 
-    PRIMARY KEY (CustomerId,CardNumber),
-    FOREIGN KEY (CustomerId) REFERENCES Customer(UserId),
-    FOREIGN KEY (CardNumber) REFERENCES BankCard(CardNumber)
+    customerId INT, 
+    cardNumber VARCHAR(19) NOT NULL, 
+    PRIMARY KEY (customerId,cardNumber),
+    FOREIGN KEY (customerId) REFERENCES Customer(userId),
+    FOREIGN KEY (cardNumber) REFERENCES BankCard(cardNumber)
     );

@@ -1,9 +1,9 @@
 CREATE TABLE MenuItem(
-    ItemName VARCHAR(50) NOT NULL,
-    ItemDescription VARCHAR(50),
-    PictureUrl VARCHAR(50),
-    ItemPrice FLOAT,
-    RestaurantId INT,
-    PRIMARY KEY (ItemName,RestaurantId),
-    FOREIGN KEY (RestaurantId) REFERENCES Restaurant(RestaurantId)
+    itemName VARCHAR(50) NOT NULL,
+    itemDescription VARCHAR(50),
+    pictureUrl VARCHAR(50),
+    itemPrice FLOAT,
+    restaurantId INT,
+    PRIMARY KEY (itemName,restaurantId),
+    FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId)
 );

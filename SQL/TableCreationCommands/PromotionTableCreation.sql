@@ -1,9 +1,9 @@
 CREATE TABLE Promotions (
-    PromotionName VARCHAR(50) NOT NULL,
-    PromotionStartDate DATE ,
-    PromotionEndDate DATE,
-    DiscountPercentage PERCENTAGE,
-    RestaurantId INT,
-    PRIMARY KEY (PromotionName,RestaurantId),
-    FOREIGN KEY (RestaurantId) REFERENCES Restaurant(RestaurantId)
+    promotionName VARCHAR(50) NOT NULL,
+    promotionStartDate DATE ,
+    promotionEndDate DATE,
+    discountPercentage PERCENTAGE,
+    restaurantId INT,
+    PRIMARY KEY (promotionName,restaurantId),
+    FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId)
 );

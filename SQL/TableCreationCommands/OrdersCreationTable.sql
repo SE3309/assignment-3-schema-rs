@@ -1,10 +1,10 @@
 CREATE TABLE Orders (
-    OrderId INT PRIMARY KEY AUTO_INCREMENT,
-    SpecialRequest VARCHAR (300),
-    ExpectedTime TIME NOT NULL,
-    MaxTime TIME NOT NULL,
-    OrderDate DATE NOT NULL,
-    OrderTime TIME NOT NULL,
-    DriverId INT,
-    FOREIGN KEY (DriverId) REFERENCES Driver(DriverId)
+    orderId INT PRIMARY KEY AUTO_INCREMENT,
+    specialRequest VARCHAR (300),
+    expectedTime TIME NOT NULL,
+    maxTime TIME NOT NULL,
+    orderDate DATE NOT NULL,
+    orderTime TIME NOT NULL,
+    driverId INT,
+    FOREIGN KEY (driverId) REFERENCES Driver(driverId)
 );
