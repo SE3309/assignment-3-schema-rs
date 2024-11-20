@@ -1,7 +1,7 @@
 CREATE TABLE OrderItem (
-    OrderId INT,
-    ItemName VARCHAR(300),
-    PRIMARY KEY (OrderId,ItemName),
-    FOREIGN KEY (OrderId) REFERENCES PlacedOrder(OrderId),
-    FOREIGN KEY (ItemName) REFERENCES MenuItem(ItemName)
+    orderId INT,
+    itemName VARCHAR(300),
+    PRIMARY KEY (orderId,itemName),
+    FOREIGN KEY (orderId) REFERENCES PlacedOrder(orderId),
+    FOREIGN KEY (itemName) REFERENCES MenuItem(itemName)
 );

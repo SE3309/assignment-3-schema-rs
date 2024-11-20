@@ -1,11 +1,11 @@
 CREATE TABLE PlacedOrder (
-    DATE DATE NOT NULL,
-    TIME TIMESTAMP NOT NULL,
-    CustomerId INT,
-    RestaurantId INT,
-    OrderId INT,
-    PRIMARY KEY (OrderId),
-    FOREIGN KEY (CustomerId) REFERENCES Customer(UserId),
-    FOREIGN KEY (RestaurantId) REFERENCES Restaurant(RestaurantId),
-    FOREIGN KEY (OrderId) REFERENCES Orders(OrderId)
+    orderDate DATE NOT NULL,
+    orderTime TIMESTAMP NOT NULL,
+    customerId INT,
+    restaurantId INT,
+    orderId INT,
+    PRIMARY KEY (orderId),
+    FOREIGN KEY (customerId) REFERENCES Customer(userId),
+    FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId),
+    FOREIGN KEY (orderId) REFERENCES Orders(orderId)
 );

@@ -1,10 +1,10 @@
 CREATE TABLE Review ( 
-    Rating INT, 
-    Notes VARCHAR(300) NOT NULL, 
-    DayPosted DATE NOT NULL, 
-    CustomerId  INT NOT NULL, 
-    RestaurantId INT NOT NULL, 
-    PRIMARY KEY (CustomerId,RestaurantId),
-    FOREIGN KEY (CustomerId) REFERENCES Customer(UserId),
-    FOREIGN KEY (RestaurantId) REFERENCES Restaurant(RestaurantId)
+    rating INT, 
+    notes VARCHAR(300) NOT NULL, 
+    dayPosted DATE NOT NULL, 
+    customerId  INT NOT NULL, 
+    restaurantId INT NOT NULL, 
+    PRIMARY KEY (customerId,restaurantId),
+    FOREIGN KEY (customerId) REFERENCES Customer(userId),
+    FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId)
 );
