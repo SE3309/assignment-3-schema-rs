@@ -1,6 +1,6 @@
 CREATE TABLE Review ( 
     rating INT, 
-    notes VARCHAR(300) NOT NULL, 
+    reviewNotes VARCHAR(300) NOT NULL, 
     dayPosted DATE NOT NULL, 
     customerId  INT NOT NULL, 
     restaurantId INT NOT NULL, 

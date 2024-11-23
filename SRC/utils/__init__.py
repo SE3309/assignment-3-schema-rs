@@ -1,6 +1,8 @@
 import generateAddresses
 import csv
 import mysql.connector
+import faker
+import random
 
 connection = mysql.connector.connect(
     host="localhost",
@@ -94,9 +96,12 @@ for row in customers:
 #Reviews
 count=0
 for row in restaurants:
-    query = "INSERT INTO CustomerDeliveryAddress (customerId,street,streetNumber,city) VALUES (%d,%s,%s,%s)"
-    values= (count,address["Street"],address["StreetNumber"],address["City"])
-    count+=1#MenuItems Insertion
+    query = "INSERT INTO Review (rating,reviewNotes,dayPosted,customerId,restaurantId) VALUES (%d,%s,%s,%d,%d)"
+    values= (random.randint(0,5),random.choice(["Great","Food was bad","Loved it!", "meh","Never eat here again"])
+             ,address["StreetNumber"],address["City"])
+    count+=1
+
+#MenuItems Insertion
 with open("menuItems.csv", mode="r") as file:
     csv_reader = csv.DictReader(file)
     
