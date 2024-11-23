@@ -100,3 +100,15 @@ for row in restaurants:
     values= (random.randint(0,5),random.choice(["Great","Food was bad","Loved it!", "meh","Never eat here again"])
              ,count,count)
     count+=1
+
+#MenuItems Insertion
+with open("menuItems.csv", mode="r") as file:
+    csv_reader = csv.DictReader(file)
+    
+    # Access a specific column by name (e.g., "ColumnName")
+    for row in csv_reader:
+        query = "INSERT INTO MenuItem (itemName, itemDescription, pictureUrl, itemPrice, restaurantId) VALUES (%s, %s, %s,%s,%s)"
+        values = (row["itemName"], row["itemDescription"], row["pictureUrl"],row["itemPrice"],row["restaurantId"])
+        cursor.execute(query, values)
+        connection.commit()
+
