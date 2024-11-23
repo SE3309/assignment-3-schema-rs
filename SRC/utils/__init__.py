@@ -1,8 +1,11 @@
 import generateAddresses
 import csv
 import mysql.connector
-import faker
+from faker import Faker
 import random
+
+
+fake = Faker()
 
 connection = mysql.connector.connect(
     host="localhost",
@@ -22,7 +25,7 @@ drivers=[]
 address = generateAddresses.generate_addresses()
 
 #Tables left to do
-#DiscountItem,MenuItem,OrderItem,OrderPayment,Orders,PlacedOrders,Promotion,RestaurantGenre
+#DiscountItem,OrderItem,OrderPayment,Orders,PlacedOrders,Promotion,
 
 # Customer Insertion
 with open("customers.csv", mode="r") as file:
@@ -97,7 +100,7 @@ for row in customers:
 count=0
 for row in restaurants:
     query = "INSERT INTO Review (rating,reviewNotes,dayPosted,customerId,restaurantId) VALUES (%d,%s,%s,%d,%d)"
-    values= (random.randint(0,5),random.choice(["Great","Food was bad","Loved it!", "meh","Never eat here again"])
+    values= (random.randint(0,5),random.choice(["Great","Food was bad","Loved it!", "meh","Never eat here again"],fake.date())
              ,count,count)
     count+=1
 
@@ -111,4 +114,14 @@ with open("menuItems.csv", mode="r") as file:
         values = (row["itemName"], row["itemDescription"], row["pictureUrl"],row["itemPrice"],row["restaurantId"])
         cursor.execute(query, values)
         connection.commit()
+
+#RestaurantGenres Insertion
+    genres = [
+    "Italian","Chinese","Japanese","Mexican","Indian","Thai","French","Greek","Mediterranean","Spanish"
+    ]
+    count=0
+    for row in restaurants:
+        query="INSERT INTO RestaurantGenres (restaurantId,genre) VALUES(%d, %s)"
+        values=(count,random.choice(genres))
+
 
