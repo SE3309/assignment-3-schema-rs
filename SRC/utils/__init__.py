@@ -81,7 +81,7 @@ with open("bankCard.csv", mode="r") as file:
 count = 0
 for row in customers:
     query = "INSERT INTO CustomerBankCard (customerId,cardNumber) VALUES (%d,%s)"
-    values= (count,bankCard[0]["CardNumber"])
+    values= (count,bankCard[count]["CardNumber"])
     count+=1
 
 #Customer Delivery Address 
@@ -91,3 +91,9 @@ for row in customers:
     values= (count,address["Street"],address["StreetNumber"],address["City"])
     count+=1
 
+#Reviews
+count=0
+for row in restaurants:
+    query = "INSERT INTO CustomerDeliveryAddress (customerId,street,streetNumber,city) VALUES (%d,%s,%s,%s)"
+    values= (count,address["Street"],address["StreetNumber"],address["City"])
+    count+=1
