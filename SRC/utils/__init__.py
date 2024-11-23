@@ -22,7 +22,7 @@ drivers=[]
 address = generateAddresses.generate_addresses()
 
 #Tables left to do
-#DiscountItem,MenuItem,OrderItem,OrderPayment,Orders,PlacedOrders,Promotion,RestaurantGenre,Review
+#DiscountItem,MenuItem,OrderItem,OrderPayment,Orders,PlacedOrders,Promotion,RestaurantGenre
 
 # Customer Insertion
 with open("customers.csv", mode="r") as file:
@@ -98,5 +98,5 @@ count=0
 for row in restaurants:
     query = "INSERT INTO Review (rating,reviewNotes,dayPosted,customerId,restaurantId) VALUES (%d,%s,%s,%d,%d)"
     values= (random.randint(0,5),random.choice(["Great","Food was bad","Loved it!", "meh","Never eat here again"])
-             ,address["StreetNumber"],address["City"])
+             ,count,count)
     count+=1
