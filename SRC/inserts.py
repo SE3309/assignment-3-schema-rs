@@ -26,8 +26,8 @@ menuItems=[]
 promotions = []
 address = generateAddresses.generate_addresses(4000,40)
 
-#Tables left to do
-#DiscountItem,Promotion,
+
+
 
 # Customer Insertion
 with open("customers.csv", mode="r") as file:
@@ -36,23 +36,23 @@ with open("customers.csv", mode="r") as file:
     # Access a specific column by name (e.g., "ColumnName")
     for row in csv_reader:
         customers.append(row)
-        query = "INSERT INTO Customer (fName, lName, email,userPassword) VALUES (%s, %s, %s,%s)"
-        values = (row["FName"], row["LName"], row["Email"],row["UserPassword"])
-        cursor.execute(query, values)
-        connection.commit()
+        # query = "INSERT INTO Customer (fName, lName, email,userPassword) VALUES (%s, %s, %s,%s)"
+        # values = (row["FName"], row["LName"], row["Email"],row["UserPassword"])
+        # cursor.execute(query, values)
+        # connection.commit()
         
 
-#Driver Insertion
+# #Driver Insertion
 with open("drivers.csv", mode="r") as file:
     csv_reader = csv.DictReader(file)
     
     # Access a specific column by name (e.g., "ColumnName")
     for row in csv_reader:
         drivers.append(row)
-        query = "INSERT INTO Driver (fName, lName, email,userPassword, licensePlate) VALUES (%s, %s, %s,%s,%s)"
-        values = (row["FName"], row["LName"], row["Email"],row["UserPassword"],row["LicensePlate"])
-        cursor.execute(query, values)
-        connection.commit()
+        # query = "INSERT INTO Driver (fName, lName, email,userPassword, licensePlate) VALUES (%s, %s, %s,%s,%s)"
+        # values = (row["FName"], row["LName"], row["Email"],row["UserPassword"],row["LicensePlate"])
+        # cursor.execute(query, values)
+        # connection.commit()
 
 
 #Restaurant Insertion
@@ -64,48 +64,55 @@ with open("restaurants.csv", mode="r") as file:
     # Access a specific column by name (e.g., "ColumnName")
     for row in csv_reader:
         restaurants.append(row)
-        query = "INSERT INTO Restaurant (restaurantName, street, streetNumber, city) VALUES (%s, %s, %s,%s)"
-        values = (row["RestaurantName"], row["Street"], row["StreetNumber"],row["City"])
-        cursor.execute(query, values)
-        connection.commit()
+        # query = "INSERT INTO Restaurant (restaurantName, street, streetNumber, city) VALUES (%s, %s, %s,%s)"
+        # values = (row["RestaurantName"], row["Street"], row["StreetNumber"],row["City"])
+        # cursor.execute(query, values)
+        # connection.commit()
 
 
 #BankCard Insertion
+count = 0
 with open("bankCard.csv", mode="r") as file:
     csv_reader = csv.DictReader(file)
     
     # Access a specific column by name (e.g., "ColumnName")
     for row in csv_reader:
         bankCard.append(row)
-        query = query = """ INSERT INTO BankCard (cardNumber, cardType, street, streetNumber, city, 
-            cardProvider, expiryDate, bankCVC, cardHolderName) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """
-        values = (row["CardNumber"],row["CardType"],row["Street"],row["StreetNumber"],row["City"],row["CardProvider"],
-            row["ExpiryDate"],row["BankCVC"],customers["fName"]+ " "+ customers["lName"])
-        cursor.execute(query, values)
-        connection.commit()
+        # query = query = """ INSERT INTO BankCard (cardNumber, cardType, street, streetNumber, city, 
+        #     cardProvider, expiryDate, bankCVC, cardHolderName) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        #     """
+        # values = (row["CardNumber"],row["CardType"],row["Street"],row["StreetNumber"],row["City"],row["CardProvider"],
+        #     row["ExpiryDate"],row["BankCVC"],customers[count]["FName"]+ " "+ customers[count]["LName"])
+        # cursor.execute(query, values)
+        # connection.commit()
 
 
 #CustomerBankCard Insertion
 count = 0
 for row in customers:
-    query = "INSERT INTO CustomerBankCard (customerId,cardNumber) VALUES (%d,%s)"
+    query = "INSERT INTO CustomerBankCard (customerId,cardNumber) VALUES (%s,%s)"
     values= (count,bankCard[count]["CardNumber"])
+    cursor.execute(query, values)
+    connection.commit()
     count+=1
 
 #Customer Delivery Address 
 count = 0
 for row in customers:
-    query = "INSERT INTO CustomerDeliveryAddress (customerId,street,streetNumber,city) VALUES (%d,%s,%s,%s)"
+    query = "INSERT INTO CustomerDeliveryAddress (customerId,street,streetNumber,city) VALUES (%s,%s,%s,%s)"
     values= (count,address["Street"],address["StreetNumber"],address["City"])
+    cursor.execute(query, values)
+    connection.commit()
     count+=1
 
 #Reviews
 count=0
 for row in restaurants:
-    query = "INSERT INTO Review (rating,reviewNotes,dayPosted,customerId,restaurantId) VALUES (%s,%s,%s,%d,%d)"
+    query = "INSERT INTO Review (rating,reviewNotes,dayPosted,customerId,restaurantId) VALUES (%s,%s,%s,%s,%s)"
     values= (random.randint(0,5),random.choice(["Great","Food was bad","Loved it!", "meh","Never eat here again"],fake.date())
              ,count,count)
+    cursor.execute(query, values)
+    connection.commit()
     count+=1
 
 #MenuItems Insertion
@@ -126,10 +133,11 @@ genres = [
 ]
 count=0
 for row in restaurants:
-    query="INSERT INTO RestaurantGenres (restaurantId,genre) VALUES(%d, %s)"
+    query="INSERT INTO RestaurantGenres (restaurantId,genre) VALUES(%s, %s)"
     values=(count,random.choice(genres))
     cursor.execute(query, values)
     connection.commit()
+    count+=1
 
 
 #OrderPayment
@@ -137,7 +145,7 @@ count = 0
 requests = ["","","","Leave at door","Knock twice","Bring extra sauces"]
 for row in customers:
     query = """INSERT INTO OrderPayment (specialRequest, street, streetNumber, city, tip, 
-            deliveryFee, driverId, cardNumber) VALUES (%s, %s, %s, %s, %s, %s, %d, %s)"""
+            deliveryFee, driverId, cardNumber) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
     values = (random.choice(requests), address["Street"],address["StreetNumber"],address["City"],random.uniform(0, 10), 
                 random.uniform(1, 10),count%999,bankCard[count]["CardNumber"])
     cursor.execute(query, values)
@@ -147,7 +155,7 @@ for row in customers:
 #PlacedOrders
 count = 0
 for row in customers:
-    query = """INSERT INTO PlacedOrders (orderDate, orderTime, customerId, restaurantId, orderId) VALUES (%s, %s, %d,%d,%d)"""
+    query = """INSERT INTO PlacedOrders (orderDate, orderTime, customerId, restaurantId, orderId) VALUES (%s, %s, %s,%s,%s)"""
     values = (fake.date(),fake.time(),count,count,count)
     cursor.execute(query, values)
     connection.commit()
@@ -156,7 +164,7 @@ for row in customers:
 #OrderItem
 count = 0
 for row in customers:
-    query = """INSERT INTO OrderItem (orderId, itemName) VALUES (%d, %s)"""
+    query = """INSERT INTO OrderItem (orderId, itemName) VALUES (%s, %s)"""
     values = (count,menuItems[count]["itemName"])
     cursor.execute(query, values)
     connection.commit()

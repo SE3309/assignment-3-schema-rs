@@ -10,7 +10,7 @@ num_records = 4000
 num_cities = 400
 
 # Define the CSV file name
-output_file = "resturants.csv"
+output_file = "restaurants.csv"
 
 # Column headers
 fieldnames = ["RestaurantName", "Street", "StreetNumber", "City"]

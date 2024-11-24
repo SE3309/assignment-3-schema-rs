@@ -1,7 +1,7 @@
 import csv
 import random
 from faker import Faker
-from utils.generateAddresses import generate_addresses
+from generateAddresses import generate_addresses
 
 # Initialize Faker
 fake = Faker()
