@@ -22,10 +22,11 @@ customers=[]
 restaurants=[]
 bankCard=[]
 drivers=[]
+menuItems=[]
 address = generateAddresses.generate_addresses()
 
 #Tables left to do
-#DiscountItem,OrderItem,PlacedOrders,Promotion,
+#DiscountItem,Promotion,
 
 # Customer Insertion
 with open("customers.csv", mode="r") as file:
@@ -110,6 +111,7 @@ with open("menuItems.csv", mode="r") as file:
     
     # Access a specific column by name (e.g., "ColumnName")
     for row in csv_reader:
+        menuItems.append(row)
         query = "INSERT INTO MenuItem (itemName, itemDescription, pictureUrl, itemPrice, restaurantId) VALUES (%s, %s, %s,%s,%s)"
         values = (row["itemName"], row["itemDescription"], row["pictureUrl"],row["itemPrice"],row["restaurantId"])
         cursor.execute(query, values)
@@ -139,3 +141,20 @@ with open("menuItems.csv", mode="r") as file:
         connection.commit()
         count+=1
 
+#PlacedOrders
+    count = 0
+    for row in customers:
+        query = """INSERT INTO PlacedOrders (orderDate, orderTime, customerId, restaurantId, orderId) VALUES (%s, %s, %d,%d,%d)"""
+        values = (fake.date(),fake.time(),count,count,count)
+        cursor.execute(query, values)
+        connection.commit()
+        count+=1
+
+#OrderItem
+    count = 0
+    for row in customers:
+        query = """INSERT INTO OrderItem (orderId, itemName) VALUES (%d, %s)"""
+        values = (count,menuItems[count]["itemName"])
+        cursor.execute(query, values)
+        connection.commit()
+        count+=1
