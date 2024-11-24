@@ -23,6 +23,7 @@ restaurants=[]
 bankCard=[]
 drivers=[]
 menuItems=[]
+promotions = []
 address = generateAddresses.generate_addresses()
 
 #Tables left to do
@@ -118,43 +119,53 @@ with open("menuItems.csv", mode="r") as file:
         connection.commit()
 
 #RestaurantGenres Insertion
-    genres = [
-    "Italian","Chinese","Japanese","Mexican","Indian","Thai","French","Greek","Mediterranean","Spanish"
-    ]
-    count=0
-    for row in restaurants:
-        query="INSERT INTO RestaurantGenres (restaurantId,genre) VALUES(%d, %s)"
-        values=(count,random.choice(genres))
-        cursor.execute(query, values)
-        connection.commit()
+genres = [
+"Italian","Chinese","Japanese","Mexican","Indian","Thai","French","Greek","Mediterranean","Spanish"
+]
+count=0
+for row in restaurants:
+    query="INSERT INTO RestaurantGenres (restaurantId,genre) VALUES(%d, %s)"
+    values=(count,random.choice(genres))
+    cursor.execute(query, values)
+    connection.commit()
 
 
 #OrderPayment
-    count = 0
-    requests = ["","","","Leave at door","Knock twice","Bring extra sauces"]
-    for row in customers:
-        query = """INSERT INTO OrderPayment (specialRequest, street, streetNumber, city, tip, 
-                deliveryFee, driverId, cardNumber) VALUES (%s, %s, %s, %s, %s, %s, %d, %s)"""
-        values = (random.choice(requests), address["Street"],address["StreetNumber"],address["City"],random.uniform(0, 10), 
-                  random.uniform(1, 10),count%999,bankCard[count]["CardNumber"])
-        cursor.execute(query, values)
-        connection.commit()
-        count+=1
+count = 0
+requests = ["","","","Leave at door","Knock twice","Bring extra sauces"]
+for row in customers:
+    query = """INSERT INTO OrderPayment (specialRequest, street, streetNumber, city, tip, 
+            deliveryFee, driverId, cardNumber) VALUES (%s, %s, %s, %s, %s, %s, %d, %s)"""
+    values = (random.choice(requests), address["Street"],address["StreetNumber"],address["City"],random.uniform(0, 10), 
+                random.uniform(1, 10),count%999,bankCard[count]["CardNumber"])
+    cursor.execute(query, values)
+    connection.commit()
+    count+=1
 
 #PlacedOrders
-    count = 0
-    for row in customers:
-        query = """INSERT INTO PlacedOrders (orderDate, orderTime, customerId, restaurantId, orderId) VALUES (%s, %s, %d,%d,%d)"""
-        values = (fake.date(),fake.time(),count,count,count)
-        cursor.execute(query, values)
-        connection.commit()
-        count+=1
+count = 0
+for row in customers:
+    query = """INSERT INTO PlacedOrders (orderDate, orderTime, customerId, restaurantId, orderId) VALUES (%s, %s, %d,%d,%d)"""
+    values = (fake.date(),fake.time(),count,count,count)
+    cursor.execute(query, values)
+    connection.commit()
+    count+=1
 
 #OrderItem
-    count = 0
-    for row in customers:
-        query = """INSERT INTO OrderItem (orderId, itemName) VALUES (%d, %s)"""
-        values = (count,menuItems[count]["itemName"])
+count = 0
+for row in customers:
+    query = """INSERT INTO OrderItem (orderId, itemName) VALUES (%d, %s)"""
+    values = (count,menuItems[count]["itemName"])
+    cursor.execute(query, values)
+    connection.commit()
+    count+=1
+
+#Promotions
+with open("promotions.csv", mode="r") as file:
+    csv_reader = csv.DictReader(file)
+    for row in csv_reader:
+        promotions.append(row)
+        query = "INSERT INTO Promotion (promotionName, promotionStartDate, promotionEndDate, discountPercentage, restaurantId) VALUES (%s, %s, %s,%s,%s)"
+        values = (row["promotionName"], row["promotionStartDate"], row["promotionEndDate"],row["discountPercentage"],row["restaurantId"])
         cursor.execute(query, values)
         connection.commit()
-        count+=1
