@@ -90,7 +90,7 @@ CREATE TABLE MenuItem (
 );
 
 -- Promotions Table (Depends on Restaurant)
-CREATE TABLE Promotions (
+CREATE TABLE Promotion (
     promotionName VARCHAR(50) NOT NULL,
     promotionStartDate DATE,
     promotionEndDate DATE,
@@ -106,7 +106,7 @@ CREATE TABLE DiscountedItem (
     itemName VARCHAR (50),
     restaurantId INT,
     PRIMARY KEY (promotionName,itemName,restaurantId),
-    FOREIGN KEY (promotionName,restaurantId) REFERENCES Promotions (promotionName,restaurantId),
+    FOREIGN KEY (promotionName,restaurantId) REFERENCES Promotion (promotionName,restaurantId),
     FOREIGN KEY (itemName, restaurantId) REFERENCES MenuItem(itemName, restaurantId)
 );
 

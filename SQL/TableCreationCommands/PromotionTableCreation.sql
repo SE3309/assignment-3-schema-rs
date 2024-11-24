@@ -1,4 +1,4 @@
-CREATE TABLE Promotions (
+CREATE TABLE Promotion (
     promotionName VARCHAR(50) NOT NULL,
     promotionStartDate DATE ,
     promotionEndDate DATE,
