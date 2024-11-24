@@ -169,3 +169,31 @@ with open("promotions.csv", mode="r") as file:
         values = (row["promotionName"], row["promotionStartDate"], row["promotionEndDate"],row["discountPercentage"],row["restaurantId"])
         cursor.execute(query, values)
         connection.commit()
+
+#create list of discounted menu items
+promoted_restaurants = {prom["restaurantId"] for prom in promotions}
+
+
+
+# DiscountItem insertion
+for promotion in promotions:
+    # Get all menu items for the restaurant in this promotion
+    restaurant_id = promotion["restaurantId"]
+    promotion_name = promotion["promotionName"]
+
+    # Find matching menu items
+    matching_menu_items = [item for item in menuItems if item["restaurantId"] == restaurant_id]
+
+    if not matching_menu_items:
+        # Skip if no menu items found for the restaurant
+        continue
+
+    # Select a random menu item for the discount
+    discounted_item = random.choice(matching_menu_items)
+    item_name = discounted_item["itemName"]
+
+    # Insert into DiscountItem table
+    query = "INSERT INTO DiscountedItem (promotionName, itemName, restaurantId) VALUES (%s, %s, %s)"
+    values = (promotion_name, item_name, restaurant_id)
+    cursor.execute(query, values)
+    connection.commit()
