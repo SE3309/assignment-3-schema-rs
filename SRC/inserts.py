@@ -4,19 +4,29 @@ import mysql.connector
 from faker import Faker
 import random
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 fake = Faker()
+
+# IF YOU GET AN ERROR!!!
+# Add a .env file with the variables below and the values in your mysql database
+# you will also need run: pip install python-dotenv
 
 connection = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="PrettyBoy921;20",
-    database="Schema_Eats"
+    password=os.getenv('MYSQL_PASSWORD'), # So chid can still use his database: "PrettyBoy921;20" 
+    database=os.getenv('MYSQL_DATABASE_SCHEMA'), # So chid can still use his database: "Schema_Eats"
+    auth_plugin='mysql_native_password'
 )
 
 # Create a cursor object
 cursor = connection.cursor()
 
+print("CONNECTED")
 
 customers=[]
 restaurants=[]
