@@ -185,8 +185,8 @@ for row in customers:
 #OrderItem
 count = 0
 for row in customers:
-    query = """INSERT INTO OrderItem (orderId, itemName) VALUES (%s, %s)"""
-    values = (count+1,menuItems[count]["itemName"])
+    query = """INSERT INTO OrderItem (orderId, itemName, restaurantId) VALUES (%s, %s)"""
+    values = (count+1,menuItems[count]["itemName"],count+1)
     cursor.execute(query, values)
     connection.commit()
     count+=1
