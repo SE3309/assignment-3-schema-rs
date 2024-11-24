@@ -15,12 +15,19 @@ fake = Faker()
 # Add a .env file with the variables below and the values in your mysql database
 # you will also need run: pip install python-dotenv
 
+# connection = mysql.connector.connect(
+#     host="localhost",
+#     user="root",
+#     password=os.getenv('MYSQL_PASSWORD'), # So chid can still use his database: "PrettyBoy921;20" 
+#     database=os.getenv('MYSQL_DATABASE_SCHEMA'), # So chid can still use his database: "Schema_Eats"
+#     auth_plugin='mysql_native_password'
+# )
+
 connection = mysql.connector.connect(
     host="localhost",
     user="root",
-    password=os.getenv('MYSQL_PASSWORD'), # So chid can still use his database: "PrettyBoy921;20" 
-    database=os.getenv('MYSQL_DATABASE_SCHEMA'), # So chid can still use his database: "Schema_Eats"
-    auth_plugin='mysql_native_password'
+    password= "",
+    database=""
 )
 
 # Create a cursor object
@@ -165,6 +172,7 @@ for row in customers:
 
 # PlacedOrders
 count = 0
+
 for row in customers:
     order_date = fake.date()
     order_time= fake.time()
