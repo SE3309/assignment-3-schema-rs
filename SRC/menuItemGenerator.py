@@ -26,7 +26,7 @@ with open(output_file, mode="w", newline="") as file:
             "itemDescription": faker.sentence(nb_words = 12),
             "pictureUrl": faker.image_url(),
             "itemPrice": faker.random_number(digits=2),
-            "restaurantId": round(random.uniform(5, 50), 3),
+            "restaurantId": i,
         })
 
 print(f"{num_records} random menu items have been written to {output_file}.")
