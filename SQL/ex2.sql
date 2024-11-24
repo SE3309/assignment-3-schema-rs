@@ -49,20 +49,22 @@ CREATE INDEX idx_bankcard_cardnumber ON BankCard(cardNumber); -- Index for faste
 
 -- CustomerBankCard Table
 CREATE TABLE CustomerBankCard ( 
-    customerId INT NULL, -- Nullable to support SET NULL on deletion
+    id INT PRIMARY KEY AUTO_INCREMENT, -- Surrogate key
+    customerId INT, 
     cardNumber CHAR(16) NOT NULL, 
-    PRIMARY KEY (customerId, cardNumber), 
-    FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE SET NULL, -- SET NULL for safer deletion
+    UNIQUE (customerId, cardNumber), -- Enforce uniqueness
+    FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE SET NULL, 
     FOREIGN KEY (cardNumber) REFERENCES BankCard(cardNumber) 
 );
 
 -- CustomerDeliveryAddress Table
 CREATE TABLE CustomerDeliveryAddress (
-    customerId INT NULL, -- Nullable to support SET NULL on deletion
+    addressId INT PRIMARY KEY AUTO_INCREMENT, -- Surrogate key
+    customerId INT, 
     street VARCHAR(300) NOT NULL,
     streetNumber VARCHAR(20) NOT NULL,
     city VARCHAR(300) NOT NULL,
-    PRIMARY KEY (customerId, street, streetNumber, city),
+    UNIQUE (customerId, street, streetNumber, city), -- Enforce uniqueness
     FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE SET NULL -- SET NULL for safer deletion
 );
 
@@ -70,12 +72,13 @@ CREATE INDEX idx_customer_delivery_address ON CustomerDeliveryAddress(city, stre
 
 -- Review Table
 CREATE TABLE Review ( 
+    reviewId INT PRIMARY KEY AUTO_INCREMENT, -- Surrogate key
     rating INT CHECK (rating BETWEEN 1 AND 5), -- Ensures ratings are between 1 and 5
     reviewNotes VARCHAR(300) NOT NULL, 
     dayPosted DATE NOT NULL, 
-    customerId INT NULL, -- Nullable to support SET NULL on deletion
-    restaurantId INT NULL, -- Nullable to support SET NULL on deletion
-    PRIMARY KEY (customerId, restaurantId), 
+    customerId INT, 
+    restaurantId INT, 
+    UNIQUE (customerId, restaurantId), -- Enforce uniqueness
     FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE SET NULL, -- SET NULL for safer deletion
     FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE SET NULL -- SET NULL for safer deletion
 );
@@ -84,7 +87,7 @@ CREATE INDEX idx_review_customer ON Review(customerId); -- Index for faster cust
 
 -- RestaurantGenre Table
 CREATE TABLE RestaurantGenre (
-    restaurantId INT NULL, -- Nullable to support SET NULL on deletion
+    restaurantId INT, 
     genre VARCHAR(300) NOT NULL,
     PRIMARY KEY (restaurantId, genre),
     FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE SET NULL -- SET NULL for safer deletion
@@ -96,7 +99,7 @@ CREATE TABLE MenuItem (
     itemDescription VARCHAR(50),
     pictureUrl VARCHAR(50),
     itemPrice FLOAT CHECK (itemPrice >= 0), -- Ensures non-negative prices
-    restaurantId INT NULL, -- Nullable to support SET NULL on deletion
+    restaurantId INT, 
     PRIMARY KEY (itemName, restaurantId),
     FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE SET NULL -- SET NULL for safer deletion
 );
@@ -109,7 +112,7 @@ CREATE TABLE Promotions (
     promotionStartDate DATE,
     promotionEndDate DATE,
     discountPercentage DECIMAL(5,2) CHECK (discountPercentage BETWEEN 0 AND 100), -- Ensures percentages are between 0 and 100
-    restaurantId INT NULL, -- Nullable to support SET NULL on deletion
+    restaurantId INT, 
     PRIMARY KEY (promotionName, restaurantId),
     FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE SET NULL, -- SET NULL for safer deletion
     CHECK (promotionEndDate >= promotionStartDate) -- Ensures valid date ranges
@@ -117,10 +120,11 @@ CREATE TABLE Promotions (
 
 -- DiscountedItem Table
 CREATE TABLE DiscountedItem (
+    discountId INT PRIMARY KEY AUTO_INCREMENT, -- Surrogate key
     promotionName VARCHAR(50),
     itemName VARCHAR(50),
-    restaurantId INT NULL, -- Nullable to support SET NULL on deletion
-    PRIMARY KEY (promotionName, itemName, restaurantId),
+    restaurantId INT, 
+    UNIQUE (promotionName, itemName, restaurantId), -- Enforce uniqueness
     FOREIGN KEY (promotionName, restaurantId) REFERENCES Promotions(promotionName, restaurantId) ON DELETE SET NULL, -- SET NULL for safer deletion
     FOREIGN KEY (itemName, restaurantId) REFERENCES MenuItem(itemName, restaurantId) ON DELETE SET NULL -- SET NULL for safer deletion
 );
@@ -132,8 +136,8 @@ CREATE TABLE OrderPayment (
     street VARCHAR(300) NOT NULL, 
     streetNumber INT NOT NULL, 
     city VARCHAR(300) NOT NULL,
-    tip DECIMAL(4,2),
-    deliveryFee DECIMAL(5,2) NOT NULL,
+    tip DECIMAL(4,2) CHECK (tip >= 0), -- Ensures non-negative tips
+    deliveryFee DECIMAL(5,2) NOT NULL CHECK (deliveryFee >= 0), -- Ensures non-negative fees
     driverId INT DEFAULT NULL, -- Nullable to support SET NULL on deletion
     cardNumber CHAR(16) DEFAULT NULL, -- Nullable to support SET NULL on deletion
     FOREIGN KEY (driverId) REFERENCES Driver(userId) ON DELETE SET NULL, -- SET NULL for safer deletion
@@ -146,10 +150,9 @@ CREATE INDEX idx_orderpayment_driver ON OrderPayment(driverId); -- Index for fas
 CREATE TABLE PlacedOrder (
     orderDate DATE NOT NULL,
     orderTime TIMESTAMP NOT NULL,
-    customerId INT NULL, -- Nullable to support SET NULL on deletion
-    restaurantId INT NULL, -- Nullable to support SET NULL on deletion
-    orderId INT,
-    PRIMARY KEY (orderId),
+    customerId INT, 
+    restaurantId INT, 
+    orderId INT PRIMARY KEY,
     FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE SET NULL, -- SET NULL for safer deletion
     FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE SET NULL, -- SET NULL for safer deletion
     FOREIGN KEY (orderId) REFERENCES OrderPayment(orderId)
@@ -159,10 +162,11 @@ CREATE INDEX idx_placedorder_customer ON PlacedOrder(customerId); -- Index for f
 
 -- OrderItem Table
 CREATE TABLE OrderItem (
-    orderId INT NULL, -- Nullable to support SET NULL on deletion
+    orderItemId INT PRIMARY KEY AUTO_INCREMENT, -- Surrogate key
+    orderId INT, 
     itemName VARCHAR(50),
-    restaurantId INT NULL, -- Nullable to support SET NULL on deletion
-    PRIMARY KEY (orderId, itemName),
+    restaurantId INT, 
+    UNIQUE (orderId, itemName), -- Enforce uniqueness
     FOREIGN KEY (orderId) REFERENCES PlacedOrder(orderId),
     FOREIGN KEY (itemName, restaurantId) REFERENCES MenuItem(itemName, restaurantId)
 );
