@@ -25,7 +25,7 @@ drivers=[]
 address = generateAddresses.generate_addresses()
 
 #Tables left to do
-#DiscountItem,OrderItem,OrderPayment,Orders,PlacedOrders,Promotion,
+#DiscountItem,OrderItem,PlacedOrders,Promotion,
 
 # Customer Insertion
 with open("customers.csv", mode="r") as file:
@@ -123,5 +123,19 @@ with open("menuItems.csv", mode="r") as file:
     for row in restaurants:
         query="INSERT INTO RestaurantGenres (restaurantId,genre) VALUES(%d, %s)"
         values=(count,random.choice(genres))
+        cursor.execute(query, values)
+        connection.commit()
 
+
+#OrderPayment
+    count = 0
+    requests = ["","","","Leave at door","Knock twice","Bring extra sauces"]
+    for row in customers:
+        query = """INSERT INTO OrderPayment (specialRequest, street, streetNumber, city, tip, 
+                deliveryFee, driverId, cardNumber) VALUES (%s, %s, %s,%s,%s)"""
+        values = (random.choice(requests), address["Street"],address["StreetNumber"],address["City"],random.uniform(0, 10), 
+                  random.uniform(1, 10),count%999,bankCard[count]["CardNumber"])
+        cursor.execute(query, values)
+        connection.commit()
+        count+=1
 
