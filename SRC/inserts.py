@@ -10,7 +10,7 @@ fake = Faker()
 connection = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="PrettyBoy921;20",
+    password="",
     database="Schema_Eats"
 )
 
@@ -71,7 +71,7 @@ with open("restaurants.csv", mode="r") as file:
 
 
 #BankCard Insertion
-count = 0
+
 with open("bankCard.csv", mode="r") as file:
     csv_reader = csv.DictReader(file)
     
@@ -91,7 +91,7 @@ with open("bankCard.csv", mode="r") as file:
 count = 0
 for row in customers:
     query = "INSERT INTO CustomerBankCard (customerId,cardNumber) VALUES (%s,%s)"
-    values= (count,bankCard[count]["CardNumber"])
+    values= (count+1,bankCard[count]["CardNumber"])
     cursor.execute(query, values)
     connection.commit()
     count+=1
@@ -100,7 +100,7 @@ for row in customers:
 count = 0
 for row in customers:
     query = "INSERT INTO CustomerDeliveryAddress (customerId,street,streetNumber,city) VALUES (%s,%s,%s,%s)"
-    values= (count,address["Street"],address["StreetNumber"],address["City"])
+    values= (count+1,address["Street"],address["StreetNumber"],address["City"])
     cursor.execute(query, values)
     connection.commit()
     count+=1
@@ -134,7 +134,7 @@ genres = [
 count=0
 for row in restaurants:
     query="INSERT INTO RestaurantGenres (restaurantId,genre) VALUES(%s, %s)"
-    values=(count,random.choice(genres))
+    values=(count+1,random.choice(genres))
     cursor.execute(query, values)
     connection.commit()
     count+=1
@@ -165,7 +165,7 @@ for row in customers:
 count = 0
 for row in customers:
     query = """INSERT INTO OrderItem (orderId, itemName) VALUES (%s, %s)"""
-    values = (count,menuItems[count]["itemName"])
+    values = (count+1,menuItems[count]["itemName"])
     cursor.execute(query, values)
     connection.commit()
     count+=1
