@@ -22,7 +22,7 @@ with open(output_file, mode="w", newline="") as file:
 
     for i in range(num_records):
         writer.writerow({
-            "itemName": faker.word().capitalize(),
+            "itemName": faker.sentence(nb_words = 3).capitalize(),
             "itemDescription": faker.sentence(nb_words = 12),
             "pictureUrl": faker.image_url(),
             "itemPrice": faker.random_number(digits=2),
