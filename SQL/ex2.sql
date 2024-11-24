@@ -1,27 +1,23 @@
--- Customer Table
+-- Customer Table (No dependencies)
 CREATE TABLE Customer ( 
     userId INT PRIMARY KEY AUTO_INCREMENT, 
     fName VARCHAR(300) NOT NULL, 
     lName VARCHAR(300) NOT NULL, 
-    email VARCHAR(300) NOT NULL UNIQUE CHECK (email LIKE '%_@__%.__%'), -- Email format validation
+    email VARCHAR(300) NOT NULL UNIQUE CHECK (email LIKE '%_@__%.__%'), -- Added email format validation
     userPassword VARCHAR(300) NOT NULL 
 );
 
-CREATE INDEX idx_customer_email ON Customer(email); -- Index for faster email lookups
-
--- Driver Table
+-- Driver Table (No dependencies)
 CREATE TABLE Driver ( 
     userId INT PRIMARY KEY AUTO_INCREMENT, 
     fName VARCHAR(300) NOT NULL, 
     lName VARCHAR(300) NOT NULL, 
-    email VARCHAR(300) NOT NULL UNIQUE CHECK (email LIKE '%_@__%.__%'), -- Email format validation
+    email VARCHAR(300) NOT NULL UNIQUE CHECK (email LIKE '%_@__%.__%'), -- Added email format validation
     userPassword VARCHAR(300) NOT NULL, 
     licensePlate VARCHAR(20) NOT NULL 
 );
 
-CREATE INDEX idx_driver_email ON Driver(email); -- Index for faster email lookups
-
--- Restaurant Table
+-- Restaurant Table (No dependencies)
 CREATE TABLE Restaurant ( 
     restaurantId INT AUTO_INCREMENT PRIMARY KEY, 
     restaurantName VARCHAR(300) NOT NULL, 
@@ -30,145 +26,131 @@ CREATE TABLE Restaurant (
     city VARCHAR(300) NOT NULL 
 );
 
-CREATE INDEX idx_restaurant_city ON Restaurant(city); -- Index for city-based searches
-
--- BankCard Table
+-- BankCard Table (No dependencies)
 CREATE TABLE BankCard ( 
-    cardNumber CHAR(16) PRIMARY KEY, -- Ensures card numbers are always 16 characters
+    cardNumber CHAR(16) PRIMARY KEY, -- Changed to CHAR(16) for fixed-length card numbers
     cardType VARCHAR(300) NOT NULL, 
     street VARCHAR(300) NOT NULL, 
     streetNumber INT NOT NULL, 
     city VARCHAR(300) NOT NULL, 
     cardProvider VARCHAR(300) NOT NULL, 
     expiryDate DATE NOT NULL, 
-    bankCVC CHAR(3) NOT NULL, -- Ensures CVC codes are always 3 characters
+    bankCVC CHAR(3) NOT NULL CHECK (bankCVC REGEXP '^[0-9]{3}$'), -- Added regex validation for 3-digit CVC codes
     cardHolderName VARCHAR(500) NOT NULL 
 );
 
-CREATE INDEX idx_bankcard_cardnumber ON BankCard(cardNumber); -- Index for faster card lookups
-
--- CustomerBankCard Table
+-- CustomerBankCard Table (Depends on Customer and BankCard)
 CREATE TABLE CustomerBankCard ( 
-    id INT PRIMARY KEY AUTO_INCREMENT, -- Surrogate key
     customerId INT, 
-    cardNumber CHAR(16) NOT NULL, 
-    UNIQUE (customerId, cardNumber), -- Enforce uniqueness
-    FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE SET NULL, 
-    FOREIGN KEY (cardNumber) REFERENCES BankCard(cardNumber) 
+    cardNumber CHAR(16) NOT NULL, -- Changed to match CHAR(16) in BankCard
+    PRIMARY KEY (customerId, cardNumber), 
+    FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
+    FOREIGN KEY (cardNumber) REFERENCES BankCard(cardNumber) ON DELETE CASCADE -- Added ON DELETE CASCADE
 );
 
--- CustomerDeliveryAddress Table
+-- CustomerDeliveryAddress Table (Depends on Customer)
 CREATE TABLE CustomerDeliveryAddress (
-    addressId INT PRIMARY KEY AUTO_INCREMENT, -- Surrogate key
-    customerId INT, 
-    street VARCHAR(300) NOT NULL,
-    streetNumber VARCHAR(20) NOT NULL,
-    city VARCHAR(300) NOT NULL,
-    UNIQUE (customerId, street, streetNumber, city), -- Enforce uniqueness
-    FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE SET NULL -- SET NULL for safer deletion
+    customerId INT NOT NULL, 
+    street VARCHAR(300) NOT NULL, 
+    streetNumber VARCHAR(20) NOT NULL, 
+    city VARCHAR(300) NOT NULL, 
+    PRIMARY KEY (customerId, street, streetNumber, city), 
+    FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE CASCADE -- Added ON DELETE CASCADE
 );
 
-CREATE INDEX idx_customer_delivery_address ON CustomerDeliveryAddress(city, street, streetNumber); -- Index for faster address lookups
-
--- Review Table
+-- Review Table (Depends on Customer and Restaurant)
 CREATE TABLE Review ( 
-    reviewId INT PRIMARY KEY AUTO_INCREMENT, -- Surrogate key
-    rating INT CHECK (rating BETWEEN 1 AND 5), -- Ensures ratings are between 1 and 5
+    rating INT CHECK (rating BETWEEN 1 AND 5), -- Added CHECK constraint for valid ratings
     reviewNotes VARCHAR(300) NOT NULL, 
     dayPosted DATE NOT NULL, 
-    customerId INT, 
-    restaurantId INT, 
-    UNIQUE (customerId, restaurantId), -- Enforce uniqueness
-    FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE SET NULL, -- SET NULL for safer deletion
-    FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE SET NULL -- SET NULL for safer deletion
+    customerId INT NOT NULL, 
+    restaurantId INT NOT NULL, 
+    PRIMARY KEY (customerId, restaurantId), 
+    FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
+    FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE RESTRICT -- Added ON DELETE RESTRICT
 );
 
-CREATE INDEX idx_review_customer ON Review(customerId); -- Index for faster customer-based lookups
-
--- RestaurantGenre Table
+-- RestaurantGenre Table (Depends on Restaurant)
 CREATE TABLE RestaurantGenre (
-    restaurantId INT, 
-    genre VARCHAR(300) NOT NULL,
-    PRIMARY KEY (restaurantId, genre),
-    FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE SET NULL -- SET NULL for safer deletion
+    restaurantId INT NOT NULL, 
+    genre VARCHAR(300) NOT NULL, 
+    PRIMARY KEY (restaurantId, genre), 
+    FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE CASCADE -- Added ON DELETE CASCADE
 );
 
--- MenuItem Table
+-- MenuItem Table (Depends on Restaurant)
 CREATE TABLE MenuItem (
-    itemName VARCHAR(50) NOT NULL,
-    itemDescription VARCHAR(50),
-    pictureUrl VARCHAR(50),
-    itemPrice FLOAT CHECK (itemPrice >= 0), -- Ensures non-negative prices
+    itemName VARCHAR(50) NOT NULL, 
+    itemDescription VARCHAR(250), -- Increased description length from 50 to 250
+    pictureUrl VARCHAR(50), 
+    itemPrice FLOAT CHECK (itemPrice >= 0), -- Added CHECK constraint for non-negative prices
     restaurantId INT, 
-    PRIMARY KEY (itemName, restaurantId),
-    FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE SET NULL -- SET NULL for safer deletion
+    PRIMARY KEY (itemName, restaurantId), 
+    FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE CASCADE -- Added ON DELETE CASCADE
 );
 
-CREATE INDEX idx_menuitem_restaurant ON MenuItem(restaurantId); -- Index for faster restaurant-based lookups
-
--- Promotions Table
+-- Promotions Table (Depends on Restaurant)
 CREATE TABLE Promotions (
-    promotionName VARCHAR(50) NOT NULL,
-    promotionStartDate DATE,
-    promotionEndDate DATE,
-    discountPercentage DECIMAL(5,2) CHECK (discountPercentage BETWEEN 0 AND 100), -- Ensures percentages are between 0 and 100
+    promotionName VARCHAR(50) NOT NULL, 
+    promotionStartDate DATE, 
+    promotionEndDate DATE, 
+    discountPercentage DECIMAL(5,2) CHECK (discountPercentage BETWEEN 0 AND 100), -- Added CHECK for valid discount percentages
     restaurantId INT, 
-    PRIMARY KEY (promotionName, restaurantId),
-    FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE SET NULL, -- SET NULL for safer deletion
-    CHECK (promotionEndDate >= promotionStartDate) -- Ensures valid date ranges
+    PRIMARY KEY (promotionName, restaurantId), 
+    FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
+    CHECK (promotionEndDate >= promotionStartDate) -- Added CHECK for valid date ranges
 );
 
--- DiscountedItem Table
+-- DiscountedItem Table (Depends on Promotions, MenuItem, and Restaurant)
 CREATE TABLE DiscountedItem (
-    discountId INT PRIMARY KEY AUTO_INCREMENT, -- Surrogate key
-    promotionName VARCHAR(50),
-    itemName VARCHAR(50),
+    promotionName VARCHAR(50), 
+    itemName VARCHAR(50), 
     restaurantId INT, 
-    UNIQUE (promotionName, itemName, restaurantId), -- Enforce uniqueness
-    FOREIGN KEY (promotionName, restaurantId) REFERENCES Promotions(promotionName, restaurantId) ON DELETE SET NULL, -- SET NULL for safer deletion
-    FOREIGN KEY (itemName, restaurantId) REFERENCES MenuItem(itemName, restaurantId) ON DELETE SET NULL -- SET NULL for safer deletion
+    PRIMARY KEY (promotionName, itemName, restaurantId), 
+    FOREIGN KEY (promotionName, restaurantId) REFERENCES Promotions(promotionName, restaurantId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
+    FOREIGN KEY (itemName, restaurantId) REFERENCES MenuItem(itemName, restaurantId) ON DELETE CASCADE -- Added ON DELETE CASCADE
 );
 
--- OrderPayment Table
-CREATE TABLE OrderPayment (
-    orderId INT PRIMARY KEY AUTO_INCREMENT,
-    specialRequest VARCHAR(300),
+-- OrderPayment Table (Depends on Driver and BankCard)
+CREATE TABLE OrderPayment ( 
+    orderId INT PRIMARY KEY AUTO_INCREMENT, 
+    specialRequest VARCHAR(300), 
     street VARCHAR(300) NOT NULL, 
     streetNumber INT NOT NULL, 
-    city VARCHAR(300) NOT NULL,
-    tip DECIMAL(4,2) CHECK (tip >= 0), -- Ensures non-negative tips
-    deliveryFee DECIMAL(5,2) NOT NULL CHECK (deliveryFee >= 0), -- Ensures non-negative fees
-    driverId INT DEFAULT NULL, -- Nullable to support SET NULL on deletion
-    cardNumber CHAR(16) DEFAULT NULL, -- Nullable to support SET NULL on deletion
-    FOREIGN KEY (driverId) REFERENCES Driver(userId) ON DELETE SET NULL, -- SET NULL for safer deletion
-    FOREIGN KEY (cardNumber) REFERENCES BankCard(cardNumber)
+    city VARCHAR(300) NOT NULL, 
+    tip DECIMAL(4, 2) CHECK (tip >= 0), -- Added CHECK constraint for non-negative tips
+    deliveryFee DECIMAL(5, 2) NOT NULL CHECK (deliveryFee >= 0), -- Added CHECK constraint for non-negative delivery fees
+    driverId INT, 
+    cardNumber CHAR(16), -- Changed to match CHAR(16) in BankCard
+    FOREIGN KEY (driverId) REFERENCES Driver(userId) ON DELETE RESTRICT, -- Added ON DELETE RESTRICT
+    FOREIGN KEY (cardNumber) REFERENCES BankCard(cardNumber) ON DELETE RESTRICT -- Added ON DELETE RESTRICT
 );
 
-CREATE INDEX idx_orderpayment_driver ON OrderPayment(driverId); -- Index for faster driver-based lookups
-
--- PlacedOrder Table
+-- PlacedOrder Table (Depends on Customer, Restaurant, and OrderPayment)
 CREATE TABLE PlacedOrder (
-    orderDate DATE NOT NULL,
-    orderTime TIMESTAMP NOT NULL,
+    orderDate DATE NOT NULL, 
+    orderTime TIMESTAMP NOT NULL, 
     customerId INT, 
     restaurantId INT, 
-    orderId INT PRIMARY KEY,
-    FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE SET NULL, -- SET NULL for safer deletion
-    FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE SET NULL, -- SET NULL for safer deletion
-    FOREIGN KEY (orderId) REFERENCES OrderPayment(orderId)
+    orderId INT PRIMARY KEY, 
+    FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE RESTRICT, -- Added ON DELETE RESTRICT
+    FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
+    FOREIGN KEY (orderId) REFERENCES OrderPayment(orderId) ON DELETE CASCADE -- Added ON DELETE CASCADE
 );
 
-CREATE INDEX idx_placedorder_customer ON PlacedOrder(customerId); -- Index for faster customer-based lookups
-
--- OrderItem Table
+-- OrderItem Table (Depends on PlacedOrder and MenuItem)
 CREATE TABLE OrderItem (
-    orderItemId INT PRIMARY KEY AUTO_INCREMENT, -- Surrogate key
     orderId INT, 
-    itemName VARCHAR(50),
+    itemName VARCHAR(50), 
     restaurantId INT, 
-    UNIQUE (orderId, itemName), -- Enforce uniqueness
-    FOREIGN KEY (orderId) REFERENCES PlacedOrder(orderId),
-    FOREIGN KEY (itemName, restaurantId) REFERENCES MenuItem(itemName, restaurantId)
+    PRIMARY KEY (orderId, itemName), 
+    FOREIGN KEY (orderId) REFERENCES PlacedOrder(orderId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
+    FOREIGN KEY (itemName, restaurantId) REFERENCES MenuItem(itemName, restaurantId) ON DELETE CASCADE -- Added ON DELETE CASCADE
 );
 
-CREATE INDEX idx_orderitem_order ON OrderItem(orderId); -- Index for faster order-based lookups
+-- Indexes for Optimization
+CREATE INDEX idx_customer_email ON Customer(email);
+CREATE INDEX idx_driver_email ON Driver(email);
+CREATE INDEX idx_review_customerId ON Review(customerId);
+CREATE INDEX idx_customer_delivery_address ON CustomerDeliveryAddress(city, street, streetNumber);
+CREATE INDEX idx_promotions_composite ON Promotions(promotionName, restaurantId);
