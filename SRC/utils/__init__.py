@@ -100,7 +100,7 @@ for row in customers:
 #Reviews
 count=0
 for row in restaurants:
-    query = "INSERT INTO Review (rating,reviewNotes,dayPosted,customerId,restaurantId) VALUES (%d,%s,%s,%d,%d)"
+    query = "INSERT INTO Review (rating,reviewNotes,dayPosted,customerId,restaurantId) VALUES (%s,%s,%s,%d,%d)"
     values= (random.randint(0,5),random.choice(["Great","Food was bad","Loved it!", "meh","Never eat here again"],fake.date())
              ,count,count)
     count+=1
@@ -134,7 +134,7 @@ with open("menuItems.csv", mode="r") as file:
     requests = ["","","","Leave at door","Knock twice","Bring extra sauces"]
     for row in customers:
         query = """INSERT INTO OrderPayment (specialRequest, street, streetNumber, city, tip, 
-                deliveryFee, driverId, cardNumber) VALUES (%s, %s, %s,%s,%s)"""
+                deliveryFee, driverId, cardNumber) VALUES (%s, %s, %s, %s, %s, %s, %d, %s)"""
         values = (random.choice(requests), address["Street"],address["StreetNumber"],address["City"],random.uniform(0, 10), 
                   random.uniform(1, 10),count%999,bankCard[count]["CardNumber"])
         cursor.execute(query, values)
