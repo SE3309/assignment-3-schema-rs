@@ -7,5 +7,5 @@ CREATE TABLE PlacedOrder (
     PRIMARY KEY (orderId),
     FOREIGN KEY (customerId) REFERENCES Customer(userId),
     FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId),
-    FOREIGN KEY (orderId) REFERENCES Orders(orderId)
+    FOREIGN KEY (orderId) REFERENCES OrderPayment(orderId)
 );

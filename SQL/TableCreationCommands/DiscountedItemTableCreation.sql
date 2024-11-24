@@ -1,9 +1,8 @@
 CREATE TABLE DiscountedItem (
-    promotionName VARCHAR (300),
-    itemName VARCHAR (300),
-    restaurantId VARCHAR (300),
+    promotionName VARCHAR (50),
+    itemName VARCHAR (50),
+    restaurantId INT,
     PRIMARY KEY (promotionName,itemName,restaurantId),
-    FOREIGN KEY (promotionName) REFERENCES Promotion (promotionName),
-    FOREIGN KEY (itemName) REFERENCES MenuItem (itemName),
-    FOREIGN KEY (restaurantId) REFERENCES Restaurant (restaurantId),
+    FOREIGN KEY (promotionName,restaurantId) REFERENCES Promotions (promotionName,restaurantId),
+    FOREIGN KEY (itemName, restaurantId) REFERENCES MenuItem(itemName, restaurantId)
 );

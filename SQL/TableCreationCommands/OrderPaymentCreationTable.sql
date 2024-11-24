@@ -8,6 +8,6 @@ CREATE TABLE OrderPayment (
     deliveryFee DECIMAL(5, 2) NOT NULL,
     driverId INT,
     cardNumber VARCHAR(19),
-    FOREIGN KEY (driverId) REFERENCES DRIVER(driverId),
+    FOREIGN KEY (driverId) REFERENCES DRIVER(userId),
     FOREIGN KEY (cardNumber) REFERENCES BankCard(cardNumber)
 );
