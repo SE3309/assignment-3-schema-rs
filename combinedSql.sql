@@ -81,7 +81,7 @@ CREATE TABLE RestaurantGenre (
 -- MenuItem Table (Depends on Restaurant)
 CREATE TABLE MenuItem (
     itemName VARCHAR(50) NOT NULL,
-    itemDescription VARCHAR(50),
+    itemDescription VARCHAR(250),
     pictureUrl VARCHAR(50),
     itemPrice FLOAT,
     restaurantId INT,
