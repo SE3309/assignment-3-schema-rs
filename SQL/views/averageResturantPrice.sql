@@ -10,10 +10,18 @@ FROM restaurant
     LEFT JOIN menuitem ON menuitem.`restaurantId` = restaurant.`restaurantId`
 WHERE
     itemPrice IS NOT NULL
-    ORDER BY `restaurantId` DESC
+ORDER BY `restaurantId` ASC
 
-SELECT `restaurantId`, `restaurantName`, AVG(itemPrice)
+SELECT * FROM averageresturantitemprice
+
+SELECT
+    `restaurantId`,
+    `restaurantName`,
+    AVG(itemPrice)
 FROM averageResturantItemPrice
-GROUP BY `restaurantId`,`restaurantName`
+GROUP BY
+    `restaurantId`,
+    `restaurantName`
+ORDER BY `restaurantId` ASC
 
 DROP VIEW averageresturantitemprice
