@@ -3,6 +3,9 @@
 INSERT INTO Customer (fName, lName, email, userPassword) 
 VALUES ("Jonathan", "Bailey", "Jhardry34@gmail.com", "Incredible&9s");
 
+SELECT *
+FROM Customer;
+
 INSERT INTO MenuItem (itemName, itemDescription, pictureUrl, itemPrice, restaurantId)
 SELECT "Chicken Parmesan",
        "Breaded chicken topped with marinara sauce and melted cheese",
