@@ -5,9 +5,9 @@ from faker import Faker
 import random
 
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 fake = Faker()
 
@@ -15,20 +15,20 @@ fake = Faker()
 # Add a .env file with the variables below and the values in your mysql database
 # you will also need run: pip install python-dotenv
 
-connection = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password=os.getenv('MYSQL_PASSWORD'), # So chid can still use his database: "PrettyBoy921;20" 
-    database=os.getenv('MYSQL_DATABASE_SCHEMA'), # So chid can still use his database: "Schema_Eats"
-    auth_plugin='mysql_native_password'
-)
-
 # connection = mysql.connector.connect(
 #     host="localhost",
 #     user="root",
-#     password= "",
-#     database=""
+#     password=os.getenv('MYSQL_PASSWORD'), # So chid can still use his database: "PrettyBoy921;20" 
+#     database=os.getenv('MYSQL_DATABASE_SCHEMA'), # So chid can still use his database: "Schema_Eats"
+#     auth_plugin='mysql_native_password'
 # )
+
+connection = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password= "",
+    database= "db"
+)
 
 # Create a cursor object
 cursor = connection.cursor()
@@ -198,10 +198,10 @@ for row in customers:
 print("PLACED ORDER DONE")
 
 #OrderItem
-count = 0
-for row in customers:
-    query = """INSERT INTO OrderItem (orderId, itemName, restaurantId) VALUES (%s, %s)"""
-    values = (count+1,menuItems[count]["itemName"],count+1)
+count = 1
+for i in range(len(restaurants)):
+    query = """INSERT INTO OrderItem (orderId, itemName, restaurantId) VALUES (%s, %s,%s)"""
+    values = (count,menuItems[count-1]["itemName"],menuItems[count-1]["restaurantId"])
     cursor.execute(query, values)
     connection.commit()
     count+=1
