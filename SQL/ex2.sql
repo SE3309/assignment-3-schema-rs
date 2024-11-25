@@ -132,7 +132,7 @@ CREATE TABLE OrderPayment (
     tip DECIMAL(4, 2),
     deliveryFee DECIMAL(5, 2) NOT NULL,
     driverId INT, 
-    cardNumber CHAR(16), -- Changed to match CHAR(16) in BankCard
+    cardNumber CHAR(19), -- Changed to match CHAR(16) in BankCard
     FOREIGN KEY (driverId) REFERENCES Driver(userId) ON DELETE RESTRICT, -- Added ON DELETE RESTRICT
     FOREIGN KEY (cardNumber) REFERENCES BankCard(cardNumber) ON DELETE RESTRICT -- Added ON DELETE RESTRICT
 );

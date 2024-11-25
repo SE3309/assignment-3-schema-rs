@@ -148,10 +148,8 @@ with open("menuItems.csv", mode="r") as file:
     # Access a specific column by name (e.g., "ColumnName")
     for row in csv_reader:
         menuItems.append(row)
-        print("ROW: ",row)
         query = "INSERT INTO MenuItem (itemName, itemDescription, pictureUrl, itemPrice, restaurantId) VALUES (%s, %s, %s,%s,%s)"
         values = (row["itemName"], row["itemDescription"], row["pictureUrl"],row["itemPrice"],row["restaurantId"])
-        print("VALUES: ",values)
         cursor.execute(query, values)
         connection.commit()
 
