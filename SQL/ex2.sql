@@ -38,7 +38,7 @@ CREATE TABLE BankCard (
     city VARCHAR(300) NOT NULL, 
     cardProvider VARCHAR(300) NOT NULL, 
     expiryDate VARCHAR(5), 
-    bankCVC CHAR(3) NOT NULL CHECK (bankCVC REGEXP '^[0-9]{3}$'), -- Added regex validation for 3-digit CVC codes
+    bankCVC CHAR(4) NOT NULL CHECK (bankCVC REGEXP '^[0-9]$'), -- Added regex validation for 3-digit CVC codes
     cardHolderName VARCHAR(500) NOT NULL 
 );
 DESCRIBE BankCard;
