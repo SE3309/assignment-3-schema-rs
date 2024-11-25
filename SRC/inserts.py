@@ -58,6 +58,7 @@ with open("customers.csv", mode="r") as file:
         cursor.execute(query, values)
         connection.commit()
         
+print("CUSTOMERS DONE")
 
 # #Driver Insertion
 with open("drivers.csv", mode="r") as file:
@@ -71,6 +72,7 @@ with open("drivers.csv", mode="r") as file:
         cursor.execute(query, values)
         connection.commit()
 
+print("DRIVERS DONE")
 
 #Restaurant Insertion
 with open("restaurants.csv", mode="r") as file:
@@ -86,6 +88,7 @@ with open("restaurants.csv", mode="r") as file:
         cursor.execute(query, values)
         connection.commit()
 
+print("RESTURANTS DONE")
 
 #BankCard Insertion
 count=0
@@ -104,6 +107,7 @@ with open("bankCard.csv", mode="r") as file:
         connection.commit()
         count+=1
 
+print("BANKCARD DONE")
 
 #CustomerBankCard Insertion
 count = 0
@@ -114,6 +118,8 @@ for row in customers:
     connection.commit()
     count+=1
 
+print("CUSTOMER BANKCARD DONE")
+
 #Customer Delivery Address 
 count = 0
 for row in customers:
@@ -122,6 +128,8 @@ for row in customers:
     cursor.execute(query, values)
     connection.commit()
     count+=1
+
+print("CUSTOMER DELIVERY ADDRESS DONE")
 
 #Reviews
 count=0
@@ -132,6 +140,8 @@ for row in restaurants:
     cursor.execute(query, values)
     connection.commit()
     count+=1
+
+print("REVIEW DONE")
 
 #MenuItems Insertion
 with open("menuItems.csv", mode="r") as file:
@@ -145,6 +155,8 @@ with open("menuItems.csv", mode="r") as file:
         cursor.execute(query, values)
         connection.commit()
 
+print("MENU ITEMS DONE")
+
 #RestaurantGenres Insertion
 genres = [
 "Italian","Chinese","Japanese","Mexican","Indian","Thai","French","Greek","Mediterranean","Spanish"
@@ -157,6 +169,7 @@ for row in restaurants:
     connection.commit()
     count+=1
 
+print("RESTURANT GENRE DONE")
 
 # OrderPayment
 count = 0
@@ -170,6 +183,8 @@ for row in customers:
     connection.commit()
     count+=1
 
+print("ORDER PAYMENT DONE")
+
 # PlacedOrders
 count = 0
 
@@ -182,6 +197,8 @@ for row in customers:
     connection.commit()
     count+=1
 
+print("PLACED ORDER DONE")
+
 #OrderItem
 count = 0
 for row in customers:
@@ -190,6 +207,8 @@ for row in customers:
     cursor.execute(query, values)
     connection.commit()
     count+=1
+
+print("ORDER ITEM DONE")
 
 #Promotions
 with open("promotions.csv", mode="r") as file:
@@ -200,6 +219,8 @@ with open("promotions.csv", mode="r") as file:
         values = (row["promotionName"], row["promotionStartDate"], row["promotionEndDate"],row["discountPercentage"],row["restaurantId"])
         cursor.execute(query, values)
         connection.commit()
+
+print("PROMOTIONS DONE")
 
 #create list of discounted menu items
 promoted_restaurants = {prom["restaurantId"] for prom in promotions}
@@ -228,3 +249,5 @@ for promotion in promotions:
     values = (promotion_name, item_name, restaurant_id)
     cursor.execute(query, values)
     connection.commit()
+    
+print("DISCOUTED ITEM DONE")

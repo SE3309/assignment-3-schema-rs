@@ -38,7 +38,7 @@ CREATE TABLE BankCard (
     city VARCHAR(300) NOT NULL, 
     cardProvider VARCHAR(300) NOT NULL, 
     expiryDate VARCHAR(5), 
-    bankCVC CHAR(4) NOT NULL CHECK (bankCVC REGEXP '^[0-9]$'), -- Added regex validation for 3-digit CVC codes
+    bankCVC CHAR(4) NOT NULL CHECK (bankCVC REGEXP '^[0-9]{1,4}$'), -- Added regex validation for 3-digit CVC codes
     cardHolderName VARCHAR(500) NOT NULL 
 );
 DESCRIBE BankCard;
@@ -46,7 +46,7 @@ DESCRIBE BankCard;
 -- CustomerBankCard Table (Depends on Customer and BankCard)
 CREATE TABLE CustomerBankCard ( 
     customerId INT, 
-    cardNumber CHAR(16) NOT NULL, -- Changed to match CHAR(16) in BankCard
+    cardNumber CHAR(19) NOT NULL, -- Changed to match CHAR(16) in BankCard
     PRIMARY KEY (customerId, cardNumber), 
     FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
     FOREIGN KEY (cardNumber) REFERENCES BankCard(cardNumber) ON DELETE CASCADE -- Added ON DELETE CASCADE
@@ -66,7 +66,7 @@ DESCRIBE CustomerDeliveryAddress;
 
 -- Review Table (Depends on Customer and Restaurant)
 CREATE TABLE Review ( 
-    rating INT CHECK (rating BETWEEN 1 AND 5), -- Added CHECK constraint for valid ratings
+    rating INT CHECK (rating BETWEEN 0 AND 5), -- Added CHECK constraint for valid ratings
     reviewNotes VARCHAR(300) NOT NULL, 
     dayPosted DATE NOT NULL, 
     customerId INT NOT NULL, 
