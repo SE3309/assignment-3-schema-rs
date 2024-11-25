@@ -6,6 +6,7 @@ CREATE TABLE Customer (
     email VARCHAR(300) NOT NULL UNIQUE CHECK (email LIKE '%_@__%.__%'), -- Added email format validation
     userPassword VARCHAR(300) NOT NULL 
 );
+DESCRIBE Customer;
 
 -- Driver Table (No dependencies)
 CREATE TABLE Driver ( 
@@ -16,6 +17,7 @@ CREATE TABLE Driver (
     userPassword VARCHAR(300) NOT NULL, 
     licensePlate VARCHAR(20) NOT NULL 
 );
+DESCRIBE Driver;
 
 -- Restaurant Table (No dependencies)
 CREATE TABLE Restaurant ( 
@@ -25,6 +27,7 @@ CREATE TABLE Restaurant (
     streetNumber INT NOT NULL, 
     city VARCHAR(300) NOT NULL 
 );
+DESCRIBE Restaurant;
 
 -- BankCard Table (No dependencies)
 CREATE TABLE BankCard ( 
@@ -38,6 +41,7 @@ CREATE TABLE BankCard (
     bankCVC CHAR(3) NOT NULL CHECK (bankCVC REGEXP '^[0-9]{3}$'), -- Added regex validation for 3-digit CVC codes
     cardHolderName VARCHAR(500) NOT NULL 
 );
+DESCRIBE BankCard;
 
 -- CustomerBankCard Table (Depends on Customer and BankCard)
 CREATE TABLE CustomerBankCard ( 
@@ -47,6 +51,7 @@ CREATE TABLE CustomerBankCard (
     FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
     FOREIGN KEY (cardNumber) REFERENCES BankCard(cardNumber) ON DELETE CASCADE -- Added ON DELETE CASCADE
 );
+DESCRIBE CustomerBankCard;
 
 -- CustomerDeliveryAddress Table (Depends on Customer)
 CREATE TABLE CustomerDeliveryAddress (
@@ -57,6 +62,7 @@ CREATE TABLE CustomerDeliveryAddress (
     PRIMARY KEY (customerId, street, streetNumber, city), 
     FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE CASCADE -- Added ON DELETE CASCADE
 );
+DESCRIBE CustomerDeliveryAddress;
 
 -- Review Table (Depends on Customer and Restaurant)
 CREATE TABLE Review ( 
@@ -69,6 +75,7 @@ CREATE TABLE Review (
     FOREIGN KEY (customerId) REFERENCES Customer(userId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
     FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE RESTRICT -- Added ON DELETE RESTRICT
 );
+DESCRIBE Review;
 
 -- RestaurantGenre Table (Depends on Restaurant)
 CREATE TABLE RestaurantGenre (
@@ -77,6 +84,7 @@ CREATE TABLE RestaurantGenre (
     PRIMARY KEY (restaurantId, genre), 
     FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE CASCADE -- Added ON DELETE CASCADE
 );
+DESCRIBE RestaurantGenre;
 
 -- MenuItem Table (Depends on Restaurant)
 CREATE TABLE MenuItem (
@@ -88,6 +96,7 @@ CREATE TABLE MenuItem (
     PRIMARY KEY (itemName, restaurantId), 
     FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE CASCADE -- Added ON DELETE CASCADE
 );
+DESCRIBE MenuItem;
 
 -- Promotions Table (Depends on Restaurant)
 CREATE TABLE Promotions (
@@ -100,6 +109,7 @@ CREATE TABLE Promotions (
     FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
     CHECK (promotionEndDate >= promotionStartDate) -- Added CHECK for valid date ranges
 );
+DESCRIBE Promotions;
 
 -- DiscountedItem Table (Depends on Promotions, MenuItem, and Restaurant)
 CREATE TABLE DiscountedItem (
@@ -110,6 +120,7 @@ CREATE TABLE DiscountedItem (
     FOREIGN KEY (promotionName, restaurantId) REFERENCES Promotions(promotionName, restaurantId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
     FOREIGN KEY (itemName, restaurantId) REFERENCES MenuItem(itemName, restaurantId) ON DELETE CASCADE -- Added ON DELETE CASCADE
 );
+DESCRIBE DiscountedItem;
 
 -- OrderPayment Table (Depends on Driver and BankCard)
 CREATE TABLE OrderPayment ( 
@@ -118,13 +129,14 @@ CREATE TABLE OrderPayment (
     street VARCHAR(300) NOT NULL, 
     streetNumber INT NOT NULL, 
     city VARCHAR(300) NOT NULL, 
-    tip DECIMAL(4, 2) CHECK (tip >= 0), -- Added CHECK constraint for non-negative tips
-    deliveryFee DECIMAL(5, 2) NOT NULL CHECK (deliveryFee >= 0), -- Added CHECK constraint for non-negative delivery fees
+    tip DECIMAL(4, 2),
+    deliveryFee DECIMAL(5, 2) NOT NULL,
     driverId INT, 
     cardNumber CHAR(16), -- Changed to match CHAR(16) in BankCard
     FOREIGN KEY (driverId) REFERENCES Driver(userId) ON DELETE RESTRICT, -- Added ON DELETE RESTRICT
     FOREIGN KEY (cardNumber) REFERENCES BankCard(cardNumber) ON DELETE RESTRICT -- Added ON DELETE RESTRICT
 );
+DESCRIBE OrderPayment;
 
 -- PlacedOrder Table (Depends on Customer, Restaurant, and OrderPayment)
 CREATE TABLE PlacedOrder (
@@ -137,6 +149,7 @@ CREATE TABLE PlacedOrder (
     FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
     FOREIGN KEY (orderId) REFERENCES OrderPayment(orderId) ON DELETE CASCADE -- Added ON DELETE CASCADE
 );
+DESCRIBE PlacedOrder;
 
 -- OrderItem Table (Depends on PlacedOrder and MenuItem)
 CREATE TABLE OrderItem (
@@ -147,6 +160,7 @@ CREATE TABLE OrderItem (
     FOREIGN KEY (orderId) REFERENCES PlacedOrder(orderId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
     FOREIGN KEY (itemName, restaurantId) REFERENCES MenuItem(itemName, restaurantId) ON DELETE CASCADE -- Added ON DELETE CASCADE
 );
+DESCRIBE OrderItem;
 
 -- Indexes for Optimization
 CREATE INDEX idx_customer_email ON Customer(email);
