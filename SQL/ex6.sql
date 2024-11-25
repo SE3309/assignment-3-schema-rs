@@ -1,3 +1,4 @@
+-- Modification 1
 INSERT INTO MenuItem (itemName, itemDescription, pictureUrl, itemPrice, restaurantId)
 SELECT 'Default Item', 'Default Description', 'default_image.jpg', 0.0, restaurantId
 FROM Restaurant
@@ -10,10 +11,12 @@ WHERE restaurantId NOT IN (
 
 SET SQL_SAFE_UPDATES = 0;
 
+-- Modification 2
 UPDATE promotions
 SET discountPercentage = 0
 WHERE promotionEndDate < NOW();
 
+-- Modification 3
 DELETE r1
 FROM review r1
 JOIN restaurant r2 ON r1.restaurantId = r2.restaurantId

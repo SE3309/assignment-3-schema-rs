@@ -1,3 +1,6 @@
+SELECT * FROM customerdeliveryaddress
+WHERE city = "Alyssaberg";
+
 SELECT r.*  
 FROM Restaurant r  
 WHERE (SELECT AVG(rating) AS restRating 
