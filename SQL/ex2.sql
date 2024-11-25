@@ -99,7 +99,7 @@ CREATE TABLE MenuItem (
 DESCRIBE MenuItem;
 
 -- Promotions Table (Depends on Restaurant)
-CREATE TABLE Promotions (
+CREATE TABLE Promotion (
     promotionName VARCHAR(50) NOT NULL, 
     promotionStartDate DATE, 
     promotionEndDate DATE, 
@@ -109,7 +109,7 @@ CREATE TABLE Promotions (
     FOREIGN KEY (restaurantId) REFERENCES Restaurant(restaurantId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
     CHECK (promotionEndDate >= promotionStartDate) -- Added CHECK for valid date ranges
 );
-DESCRIBE Promotions;
+DESCRIBE Promotion;
 
 -- DiscountedItem Table (Depends on Promotions, MenuItem, and Restaurant)
 CREATE TABLE DiscountedItem (
@@ -117,7 +117,7 @@ CREATE TABLE DiscountedItem (
     itemName VARCHAR(50), 
     restaurantId INT, 
     PRIMARY KEY (promotionName, itemName, restaurantId), 
-    FOREIGN KEY (promotionName, restaurantId) REFERENCES Promotions(promotionName, restaurantId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
+    FOREIGN KEY (promotionName, restaurantId) REFERENCES Promotion(promotionName, restaurantId) ON DELETE CASCADE, -- Added ON DELETE CASCADE
     FOREIGN KEY (itemName, restaurantId) REFERENCES MenuItem(itemName, restaurantId) ON DELETE CASCADE -- Added ON DELETE CASCADE
 );
 DESCRIBE DiscountedItem;
@@ -167,4 +167,4 @@ CREATE INDEX idx_customer_email ON Customer(email);
 CREATE INDEX idx_driver_email ON Driver(email);
 CREATE INDEX idx_review_customerId ON Review(customerId);
 CREATE INDEX idx_customer_delivery_address ON CustomerDeliveryAddress(city, street, streetNumber);
-CREATE INDEX idx_promotions_composite ON Promotions(promotionName, restaurantId);
+CREATE INDEX idx_promotion_composite ON Promotion(promotionName, restaurantId);
