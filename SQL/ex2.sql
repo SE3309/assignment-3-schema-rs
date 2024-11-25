@@ -28,13 +28,13 @@ CREATE TABLE Restaurant (
 
 -- BankCard Table (No dependencies)
 CREATE TABLE BankCard ( 
-    cardNumber CHAR(16) PRIMARY KEY, -- Changed to CHAR(16) for fixed-length card numbers
+    cardNumber CHAR(19) PRIMARY KEY, -- Changed to CHAR(16) for fixed-length card numbers
     cardType VARCHAR(300) NOT NULL, 
     street VARCHAR(300) NOT NULL, 
     streetNumber INT NOT NULL, 
     city VARCHAR(300) NOT NULL, 
     cardProvider VARCHAR(300) NOT NULL, 
-    expiryDate DATE NOT NULL, 
+    expiryDate VARCHAR(5), 
     bankCVC CHAR(3) NOT NULL CHECK (bankCVC REGEXP '^[0-9]{3}$'), -- Added regex validation for 3-digit CVC codes
     cardHolderName VARCHAR(500) NOT NULL 
 );
