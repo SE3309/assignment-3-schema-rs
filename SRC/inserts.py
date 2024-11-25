@@ -200,7 +200,7 @@ print("PLACED ORDER DONE")
 #OrderItem
 count = 0
 for row in customers:
-    query = """INSERT INTO OrderItem (orderId, itemName, restaurantId) VALUES (%s, %s)"""
+    query = """INSERT INTO OrderItem (orderId, itemName, restaurantId) VALUES (%s, %s, %s)"""
     values = (count+1,menuItems[count]["itemName"],count+1)
     cursor.execute(query, values)
     connection.commit()
