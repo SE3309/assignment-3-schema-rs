@@ -141,7 +141,7 @@ DESCRIBE OrderPayment;
 -- PlacedOrder Table (Depends on Customer, Restaurant, and OrderPayment)
 CREATE TABLE PlacedOrder (
     orderDate DATE NOT NULL, 
-    orderTime TIMESTAMP NOT NULL, 
+    orderTime DATETIME NOT NULL, 
     customerId INT, 
     restaurantId INT, 
     orderId INT PRIMARY KEY, 
